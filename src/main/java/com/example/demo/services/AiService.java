@@ -2,6 +2,7 @@ package com.example.demo.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,6 +15,8 @@ public class AiService {
         this.client = chatClientBuilder.build();
     }
 
-
+    public ChatResponse generateAnswer(String question) {
+        return client.prompt(question).call().chatResponse();
+    }
 
 }
