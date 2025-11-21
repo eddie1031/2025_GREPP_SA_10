@@ -8,17 +8,13 @@
 <body class="min-h-screen flex flex-col">
 
     <div class="container mx-auto flex flex-col h-full p-4 max-w-3xl">
-
         <div class="flex justify-start mb-2">
-
             <a th:href="@{/}">
                 <button class="btn btn-sm">
                     <th:block th:replace="~{fragments/icons::back}"></th:block>
                 </button>
             </a>
-
         </div>
-
         <div class="flex-1 overflow-y-auto" layout:fragment="contents"></div>
     </div>
 
