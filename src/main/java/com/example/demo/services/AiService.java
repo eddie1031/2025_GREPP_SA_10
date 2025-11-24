@@ -5,10 +5,14 @@ import com.example.demo.model.CuisineRecommendationResponse;
 import com.example.demo.model.FitnessProgramConsultantRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.chat.prompt.PromptTemplate;
+import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -23,6 +27,8 @@ public class AiService {
     private final ChatClient client;
 
     private final EmbeddingModel embeddingModel;
+
+    private final VectorStore vectorStore;
 
     public ChatResponse generateAnswer(String question) {
         return client.prompt(question).call().chatResponse();
@@ -130,6 +136,22 @@ public class AiService {
 
     }
 
+    public List<Document> searchFruits(String query) {
+        return vectorStore.similaritySearch(
+                SearchRequest.builder()
+                        .query(query)
+                        .topK(3)
+                        .build()
+        );
+    }
+
+    public String generateRagAnswer(String q) {
+        return client.prompt(q)
+                .advisors(
+                        QuestionAnswerAdvisor.builder(vectorStore).build()
+                ).call()
+                .content();
+    }
 
 }
 

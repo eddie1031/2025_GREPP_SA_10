@@ -7,10 +7,13 @@ import com.example.demo.services.AiService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.document.Document;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
+
+import java.util.List;
 
 @Slf4j
 @Controller
@@ -121,6 +124,23 @@ public class AiTestController {
 
         double similarity = aiService.getSimilarity(d1, d2);
         model.addAttribute("similarity", similarity);
+
+        return "embedding/p2";
+    }
+
+    @GetMapping("/embedding/v3")
+    public String showEmbeddingV3Page() {
+        return "embedding/p3";
+    }
+
+    @PostMapping("/embedding/v3")
+    public String findDocsFromVectorStore(
+            @RequestParam("q") String q,
+            Model model
+    ) {
+
+        List<Document> documents = aiService.searchFruits(q);
+        model.addAttribute("results", documents);
 
         return "embedding/p2";
     }
