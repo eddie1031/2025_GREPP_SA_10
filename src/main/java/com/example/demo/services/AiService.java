@@ -1,5 +1,7 @@
 package com.example.demo.services;
 
+import com.example.demo.model.CuisineRecommendationRequest;
+import com.example.demo.model.CuisineRecommendationResponse;
 import com.example.demo.model.FitnessProgramConsultantRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -66,6 +68,31 @@ public class AiService {
 
     }
 
+    public CuisineRecommendationResponse generateCuisineList(CuisineRecommendationRequest request) {
+
+        PromptTemplate promptTemplate = new PromptTemplate("""
+                You are an expert in traditional cuisines.
+                Answer the question: What is the traditional cuisine of {country}?
+                Return a list of {amount} in {language} language.
+                
+                You provide information about a specific dish from a specific country.
+                """.trim());
+
+
+        Prompt prompt = promptTemplate.create(
+                Map.of(
+                        "country", request.country(),
+                        "amount", request.amount(),
+                        "language", request.language()
+                )
+        );
+
+        return client.prompt(prompt)
+                .call()
+                .entity(CuisineRecommendationResponse.class);
+
+
+    }
 
 }
 

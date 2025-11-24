@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import com.example.demo.model.CuisineRecommendationRequest;
+import com.example.demo.model.CuisineRecommendationResponse;
 import com.example.demo.model.FitnessProgramConsultantRequest;
 import com.example.demo.services.AiService;
 import lombok.RequiredArgsConstructor;
@@ -7,10 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 @Slf4j
@@ -72,6 +71,33 @@ public class AiTestController {
         model.addAttribute("response", response);
 
         return "prompt/fitness";
+    }
+
+    @GetMapping("/prompt/v2")
+    public String showPromptV2Page() {
+        return "prompt/cuisine";
+    }
+
+    @PostMapping("/prompt/v2")
+    public String generatePromptAnswer(
+            CuisineRecommendationRequest request,
+            Model model
+    ) {
+
+        CuisineRecommendationResponse cuisineRecommendationResponse = aiService.generateCuisineList(request);
+        model.addAttribute("response", cuisineRecommendationResponse);
+
+        return "prompt/cuisine";
+    }
+
+    @GetMapping("/embedding/v1")
+    public String showEmbeddingV1Page() {
+        return "embedding/p1";
+    }
+
+    @PostMapping("/embedding/v1")
+    public String embeddingData() {
+        return "embedding/p1";
     }
 
 }
