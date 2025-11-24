@@ -9,6 +9,17 @@ chatForm.addEventListener('submit', async (e) => {
     const inputQuestion = chatInput.value.trim();
     if(!inputQuestion) return;
 
+
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('flex', 'justify-end');
+
+    messageDiv.innerHTML = `
+                        <div class="max-w-s bg-gray-200 p-3 rounded-lg text-sm">${inputQuestion}</div>
+                    `;
+
+    chatContainer.appendChild(messageDiv);
+    chatInput.value = '';
+
     const response = await fetch('/text/chat', {
         method: 'POST',
         headers: {
@@ -26,6 +37,18 @@ chatForm.addEventListener('submit', async (e) => {
 
     const answer = await response.text();
 
-    console.log(answer);
+    const answerDiv = document.createElement('div');
+    answerDiv.classList.add('flex', 'justify-start');
+    answerDiv.innerHTML = `
+                        <div class="max-w-s p-3 rounded-lg text-sm">
+                            ${answer}
+                        </div>
+                        `;
+
+    chatContainer.appendChild(answerDiv);
+
+    chatContainer.scrollTop = chatContainer.scrollHeight;
+
+    // console.log(answer);
 
 })

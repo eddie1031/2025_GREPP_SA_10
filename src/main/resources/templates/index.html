@@ -16,22 +16,39 @@
             <div class="grid grid-cols-3 gap-4 mt-16">
 
                 <div class="card card-border bg-base-100">
-
                     <div class="card-body">
-
                         <h2 class="card-title">Text Chat</h2>
-
                         <p>Spring AI의 Chat Client를 이용해서 LLM과 채팅 기능을 구현</p>
-
                         <div class="card-actions justify-end">
                             <a th:href="@{/text/chat}">
                                 <button class="btn btn-primary">이동</button>
                             </a>
                         </div>
-
-
                     </div>
+                </div>
 
+                <div class="card card-border bg-base-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Text Stream Chat</h2>
+                        <p>Spring AI의 Chat Client를 이용하여 LLM과 스트리밍 채팅 기능을 구현</p>
+                        <div class="card-actions justify-end">
+                            <a th:href="@{/stream/chat}">
+                                <button class="btn btn-primary">이동</button>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-border bg-base-100">
+                    <div class="card-body">
+                        <h2 class="card-title">Prompt Chat 1</h2>
+                        <p>프롬프트를 구성해서 채팅 기능을 구현 - 운동 프로그램 소개</p>
+                        <div class="card-actions justify-end">
+                            <a th:href="@{/prompt/v1}">
+                                <button class="btn btn-primary">이동</button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
             </div>

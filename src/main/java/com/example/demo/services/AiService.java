@@ -1,28 +1,71 @@
 package com.example.demo.services;
 
+import com.example.demo.model.FitnessProgramConsultantRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.chat.prompt.Prompt;
-import org.springframework.ai.openai.OpenAiChatOptions;
+import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class AiService {
 
     private final ChatClient client;
 
-    public AiService(ChatClient.Builder chatClientBuilder) {
-        this.client = chatClientBuilder.build();
-    }
-
     public ChatResponse generateAnswer(String question) {
-
-        OpenAiChatOptions options = new OpenAiChatOptions();
-        options.setModel("llama-3.1-8b-instant");
-
-        return client.prompt(new Prompt(question, options)).call().chatResponse();
+        return client.prompt(question).call().chatResponse();
     }
+
+    public Flux<String> generateStreamAnswer(String q) {
+        return client.prompt(q).stream().content();
+    }
+
+    public ChatResponse generateAnswerWithRoles(String q) {
+        return client.prompt(q)
+//                .system("You are a helpful assistant that can answer any question. You must answer in Korean")
+                .system("You are a helpful assistant that can answer any question. You must answer in Chinese")
+                .user(q)
+                .call()
+                .chatResponse();
+    }
+
+    public String generateCustomizedFitnessProgram(FitnessProgramConsultantRequest request) {
+
+        PromptTemplate promptTemplate = new PromptTemplate("""
+                너는 맞춤 피트니스 운동을 설계해주는 전문가야
+                
+                고객의 신체정보를 받아서, 원하는 부위의 운동을 추천해줄거야.
+                
+                다음과 같은 형식으로 대답해.
+                
+                - 대답 형식
+                {targetPart} 운동을 고민하시는군요!
+                
+                {workoutExpMonth} 개월 정도의 운동 경력을 갖고 계시고,
+                
+                신장 {height}cm, 체중 {weight}kg 정도라면 다음의 운동을 추천합니다!
+                
+                """);
+
+        Map<String, Object> params = Map.of(
+                "targetPart", request.targetPart(),
+                "height", request.height(),
+                "weight", request.weight(),
+                "workoutExpMonth", request.workoutExpMonth()
+        );
+
+        Prompt prompt = promptTemplate.create(params);
+
+        return client.prompt(prompt).call().chatResponse().getResult().getOutput().getText();
+
+    }
+
 
 }
+
